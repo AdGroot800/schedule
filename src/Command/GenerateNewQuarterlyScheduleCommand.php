@@ -2,6 +2,7 @@
 namespace App\Command;
 
 use App\Service\Schedule;
+use League\Csv\Writer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,7 +28,9 @@ class GenerateNewQuarterlyScheduleCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->schedule->generate();
+        $collection = $this->schedule->generate();
+        $writer = Writer::createFromPath('file.csv', 'w+');
+        $writer->insertAll($collection->toArray());
         return Command::SUCCESS;
     }
 }
